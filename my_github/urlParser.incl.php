@@ -15,7 +15,7 @@ class urlParser {
     //put your code here
     
     /**
-     * Simple URL parser. Parse url as follows: /[module]/[swicth]/[param1]:[value1]/[param2]:[/value2]...
+     * Simple URL parser. Parse url as follows: /[module]/[switch]/[param1]:[value1]/[param2]:[/value2]...
      * @param string $url URL to be parsed
      * @return array Array with data, fecthed from URL
      */
@@ -23,14 +23,6 @@ class urlParser {
 
 	$modulesNames = array(
 	    "building" => "Сгради",
-	    "list" => "Списъци с имоти",
-	    "search" => "Търсене",
-	    "admin" => "Администрация",
-	    "internalSearch" => "Вътрешна търсачка",
-	    "agency" => "Агенции/Строители",
-	    "activity" => "Регистър на дейности",
-	    "blog" => "Блог",
-	    "client" => "Клиенти",
 	);
 
 	$methodsNames = array(
@@ -38,26 +30,6 @@ class urlParser {
 		"searchBuilding" => "Търсене на сграда",
 		"viewBuilding" => "Преглед на сграда",
 		"editBuilding" => "Редакция на сграда",
-	    ),
-	    "admin" => array(
-		"priviliges" => "Права на потребители",
-		"transferProperties" => "Синхронизация на оферти",
-		"transferClients" => "Синхронизация на клиенти",
-	    ),
-	    "agency" => array(
-		"showAgency" => "Профил на агенция/строител",
-		"editAgency" => "Редакция/Добавяне на агенция/строител",
-	    ),
-	    "activity" => array(
-		"showActions" => "Списък по критерии",
-	    ),
-	    "blog" => array(
-		"viewArticle" => "Публикация",
-	    ),
-	    "client" => array(
-		"viewBirthdays" => "Списък с рожденици",
-		"clientProfile" => "Профил на клиент",
-		"editClient" => "Редакция/Добавяне на клиент",
 	    ),
 	);
 
@@ -71,8 +43,6 @@ class urlParser {
 	    $requestpath = preg_replace("/\/$/", '', $requestpath);
 	}
 
-//	preg_match("/^(?P<module>[\s\S]*)?\/(?P<switch>[\s\S]*)?\/?(?P<params>[\s\S]*)$/USs", $url, $getURLresults);
-//	print_r($getURLresults);
 	$returnArray['url'] = $requestpath;
 	if (preg_match("/.*?\/p(\d*?)$/", $requestpath, $matches)) {
 	    $returnArray['page'] = $matches[1];
@@ -115,9 +85,22 @@ class urlParser {
 	    $getPairs = explode(":", $getUrlDetails[$i]);
 	    $returnArray['params'][$getPairs[0]] = $getPairs[1];
 	}
-//	print_r($getUrlDetails);
-//	print_r($returnArray);
 	return $returnArray;
     }
 
+    
+    function buildUrlByParams($params) {
+	if (!empty($params['module'])) {
+	    $newUrl = "/" . $params['module'];
+	}
+	if (!empty($params['switch'])) {
+	    $newUrl .= "/" . $params['switch'];
+	}
+
+	foreach ($params['params'] as $paramName => $paramValue) {
+	    $newUrl .= "/" . $paramName . ":" . $paramValue;
+	}
+
+	return $newUrl;
+    }
 }
