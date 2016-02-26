@@ -21,18 +21,6 @@ class urlParser {
      */
     function parseUrlForResults($url) {
 
-	$modulesNames = array(
-	    "building" => "Сгради",
-	);
-
-	$methodsNames = array(
-	    "building" => array(
-		"searchBuilding" => "Търсене на сграда",
-		"viewBuilding" => "Преглед на сграда",
-		"editBuilding" => "Редакция на сграда",
-	    ),
-	);
-
 	if ($_SERVER["REQUEST_URI"]) {
 	    $requestpath = $_SERVER["REQUEST_URI"];
 	    $requestpath = preg_replace("/^\//", '', $requestpath);
@@ -45,13 +33,32 @@ class urlParser {
 
 	$returnArray['url'] = $requestpath;
 	if (preg_match("/.*?\/p(\d*?)$/", $requestpath, $matches)) {
+	    /* Pagination */
 	    $returnArray['page'] = $matches[1];
 	}
-	$returnArray['bread']['Начало'] = "/";
+	
+	/*
+	 * Breadcumb generation - the method generates a breadcrumb sub-array also
+	 */
+	
+	$modulesNames = array(
+	    "module" => "module_description",
+	);
+
+	$methodsNames = array(
+	    "module" => array(
+		"method1" => "Method 1 description",
+		"method2" => "Method 2 description",
+		"method3" => "Method 3 description",
+	    ),
+	);
+
+	$returnArray['bread']['Home'] = "/";
 
 	$getUrlDetails = explode("/", $requestpath);
 
 	if (!empty($getUrlDetails[0])) {
+	    /* Fetched module name */
 	    $returnArray['module'] = $getUrlDetails[0];
 	    $currentName = $modulesNames[$getUrlDetails[0]];
 	    if (!empty($currentName)) {
@@ -63,6 +70,7 @@ class urlParser {
 
 
 	if (!empty($getUrlDetails[1])) {
+	    /* Fetched method name */
 	    $returnArray['switch'] = $getUrlDetails[1];
 
 	    $currentMethodName = $methodsNames[$getUrlDetails[0]][$getUrlDetails[1]];
@@ -82,13 +90,18 @@ class urlParser {
 	}
 
 	for ($i = 2; $i < count($getUrlDetails); $i++) {
+	    /* Parse the rest of the URL for 'pairs' and putting them in the return array */
 	    $getPairs = explode(":", $getUrlDetails[$i]);
 	    $returnArray['params'][$getPairs[0]] = $getPairs[1];
 	}
 	return $returnArray;
     }
 
-    
+    /**
+     * 
+     * @param array $params Array with params, from whic to build the URL. Format: $array['module'], $array['switch'], $array['params']['param1]=$value1;
+     * @return string The url, which can be parced by @internal parseUrlForResults
+     */
     function buildUrlByParams($params) {
 	if (!empty($params['module'])) {
 	    $newUrl = "/" . $params['module'];
