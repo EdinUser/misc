@@ -13,6 +13,7 @@
  */
 class pagination {
 
+    /** @global int $on_page Default items to be displayed*/
     var $on_page = 10;
 
     function __construct() {
@@ -48,8 +49,6 @@ class pagination {
 	} else {
 	    $sp = 1;
 	}
-//	echo $sp;
-//	echo $baseUrl . "<hr />";
 
 	$allPages = ceil(count($arrayToBeSplitted) / $this->on_page);
 
