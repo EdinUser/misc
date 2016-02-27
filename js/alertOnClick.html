@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<!--
+Quick demonstration for alertOnClick.js 
+The script creates a div with two buttons - Yes and No. The link behind "Yes" is the href attribute from <a> element, or, if it is input, submits the form.
+The "No" selection has an event attached, which removes the warning div'
+-->
+
+<html lang="en">
+    <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<title>Bootstrap Scrollspy Auto build</title>
+
+	<!-- Bootstrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="http://code.jquery.com/jquery-2.2.1.min.js"></script>
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+    </head>
+    <body>
+	<div class="container">
+	    <div class="row">
+		<form action="/" method="post">
+		    <div class='col-sm-6 col-sm-offset-3'>
+			<div class='panel panel-info'>
+			    <div class='panel-heading'>
+				<h2 class='panel-title'>Show custom alerts</h2>
+			    </div>
+			    <div class='panel-body'>
+				<blockquote>
+				    &#x3C;a href=&#x27;/test.html&#x27; class=&#x27;btn btn-warning showAlert&#x27; title=&#x27;Are you sure?&#x27;&#x3E;Click to show&#x3C;/a&#x3E;
+				</blockquote>
+				<a href='/test.html' class='btn btn-warning showAlert' title='Are you sure you want to follow the link?'>Click to show</a>
+
+			    </div>
+			    <div class='panel-footer'>
+				<blockquote>
+				    &#x3C;input type=&#x22;submit&#x22; value=&#x22;Go!&#x22; class=&#x22;btn btn-success showAlert&#x22; data-submit=&#x27;1&#x27;/&#x3E;
+				</blockquote>
+				<input type="submit" value="Go!" class="btn btn-success showAlertInput" data-submit='1'  title='Are you sure you want to submit the form?'/>
+
+			    </div>
+			</div>
+		    </div>
+		</form>
+	    </div>
+	</div>
+	<script type="text/javascript">
+	    $(function () {
+		//link
+		$.showAlertOnClick({
+		    yesButtonText: "Confirm!",
+		    noButtonText: "Deny!"
+		});
+
+		//Firs be sure not to attach too many events
+		$(".showAlert").off();
+		//Attach the click event to the DOM element
+		$(".showAlert").on("click", function (e) {
+		    //Prevent the default action (~VERY IMPORTANT!~)
+		    e.preventDefault();
+		    //Prevent the default action (~VERY IMPORTANT!~)
+		    $.showAlertOnClick.showWarning($(this).attr("href"), this);
+		});
+
+		//Input
+
+		//Firs be sure not to attach too many events
+		$(".showAlertInput").off();
+		//Attach the click event to the DOM element
+		$(".showAlertInput").on("click", function (e) {
+		    //Prevent the default action (~VERY IMPORTANT!~)
+		    e.preventDefault();
+		    //Prevent the default action (~VERY IMPORTANT!~)
+		    $.showAlertOnClick.showWarning($(this).attr("href"), this);
+		});
+	    });
+	</script>
+	<script src="alertOnClick.js"></script>
+    </body>
+</html>
