@@ -1,14 +1,25 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of urlParser
- *
+ * Nice litle class for building and parsing URLs. Breaks url of type /module/switch/param1:value1/param2/value2,value3 to
+ * array(
+ *	'url' = '/module/switch/param1:value1/param2/value2,value3',
+ 	'module' = 'module',
+	'switch' = 'switch'.
+	'params' = array(
+		'param1' => 'value1',
+		'param2' => array(
+			'value2' => 'value2',
+			'value3' => 'value3'
+			)
+		),
+	'bread' = array(
+		'Home' => '/',
+		'module' => '/module',
+		'switch' => '/module/switch/param1:value1/param2/value2,value3'
+		)
+ 	)
  * @author Todor Kirilov
  */
 class urlParser {
@@ -17,9 +28,10 @@ class urlParser {
     /**
      * Simple URL parser. Parse url as follows: /[module]/[switch]/[param1]:[value1]/[param2]:[/value2]...
      * @param string $url URL to be parsed
+     * @param boolean $skipDigitConvert Default - true. If "false" - will convert number values to int(). Keep in mind this can break some values like "0"
      * @return array Array with data, fecthed from URL
      */
-    function parseUrlForResults($url) {
+    function parseUrlForResults($url = '', $skipDigitConvert = true) {
 
 	if ($_SERVER["REQUEST_URI"]) {
 	    $requestpath = $_SERVER["REQUEST_URI"];
@@ -89,11 +101,47 @@ class urlParser {
 	    }
 	}
 
+	// iterate all pairs in the url
 	for ($i = 2; $i < count($getUrlDetails); $i++) {
-	    /* Parse the rest of the URL for 'pairs' and putting them in the return array */
-	    $getPairs = explode(":", $getUrlDetails[$i]);
-	    $returnArray['params'][$getPairs[0]] = $getPairs[1];
-	}
+            $getPairs = explode(":", $getUrlDetails[$i]);
+		// check if the values are multiple (contain [param]/[value1],[value2])
+            if (stripos($getPairs[1], ",") !== false) {
+                $returnValues = explode(",", $getPairs[1]);
+                $explodedValue = array();
+
+                foreach ($returnValues as $valueData) {
+		    // if convert to digit is false do not convert detected values...
+                    if ($skipDigitConvert === true) {
+                        $explodedValue[] = htmlspecialchars($valueData, ENT_QUOTES);
+                    } else {
+			// check if the value is digit
+                        if (ctype_digit($valueData)) {
+                            $explodedValue[] = intval($valueData);
+                        } else {
+                            $explodedValue[] = htmlspecialchars($valueData, ENT_QUOTES);
+                        }
+                    }
+                }
+		// populate the 'params' array with values
+                $returnArray['params'][$getPairs[0]] = $explodedValue;
+            } else {
+		    // single value [param]/[value]
+		    // if convert to digit is false do not convert detected values...
+                if ($skipDigitConvert === true) {
+                    $value = htmlspecialchars($getPairs[1], ENT_QUOTES);
+                } else {
+			// check if the value is digit
+                    if (ctype_digit($getPairs[1])) {
+                        $value = intval($getPairs[1]);
+                    } else {
+                        $value = htmlspecialchars($getPairs[1], ENT_QUOTES);
+                    }
+                }
+		    
+		    // populate the 'params' array with values
+                $returnArray['params'][$getPairs[0]] = $value;
+            }
+        }
 	return $returnArray;
     }
 
