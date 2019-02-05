@@ -5,21 +5,21 @@
  * Nice litle class for building and parsing URLs. Breaks url of type /module/switch/param1:value1/param2/value2,value3 to
  * array(
  *	'url' = '/module/switch/param1:value1/param2/value2,value3',
- 	'module' = 'module',
-	'switch' = 'switch'.
-	'params' = array(
-		'param1' => 'value1',
-		'param2' => array(
-			'value2' => 'value2',
-			'value3' => 'value3'
-			)
-		),
-	'bread' = array(
-		'Home' => '/',
-		'module' => '/module',
-		'switch' => '/module/switch/param1:value1/param2/value2,value3'
-		)
- 	)
+ *	'module' = 'module',
+ *	'switch' = 'switch'.
+ *	'params' = array(
+ *		'param1' => 'value1',
+ *		'param2' => array(
+ *			'value2' => 'value2',
+ *			'value3' => 'value3'
+ *			)
+ *		),
+ *	'bread' = array(
+ *		'Home' => '/',
+ *		'module' => '/module',
+ *		'switch' => '/module/switch/param1:value1/param2/value2,value3'
+ *		)
+ *	)
  * @author Todor Kirilov
  */
 class urlParser {
